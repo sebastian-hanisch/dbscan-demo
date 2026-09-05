@@ -281,9 +281,9 @@ ausfällt.
 
 kd_col, sweep_col = st.columns(2)
 with kd_col:
-    st.plotly_chart(build_k_distance_chart(k_distances, int(min_samples)), width="stretch")
+    st.plotly_chart(build_k_distance_chart(k_distances, int(min_samples)), width="stretch", key="k_distance")
 with sweep_col:
-    st.plotly_chart(build_eps_sweep_chart(sweep), width="stretch")
+    st.plotly_chart(build_eps_sweep_chart(sweep), width="stretch", key="eps_sweep")
 
 group_fractions = per_group_noise_fraction(instance.true_labels, result.final_labels)
 gap = max(group_fractions.values()) - min(group_fractions.values()) if group_fractions else 0.0
