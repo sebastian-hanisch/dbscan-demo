@@ -16,7 +16,11 @@ sondern auf kmeans-demo. Die Kante ist konkret: DBSCAN behebt zwei Schwächen vo
 k-Means – k muss nicht vorab feststehen, und Cluster müssen nicht konvex/kugelförmig
 sein. Geplante Fortsetzung dieser Linie: **HDBSCAN**, motiviert durch DBSCANs eigene
 Schwäche bei stark unterschiedlicher Dichte – genau die Beobachtung, die diese Demo
-selbst live nachweist (siehe unten).
+selbst live nachweist (siehe unten). HDBSCAN hat inzwischen einen zweiten, unabhängigen
+Vorläufer neben dieser Demo: [agglomerative-demo](../agglomerative-demo) zeigt das
+Chaining-Problem bei Single-Linkage, das HDBSCANs andere Kernzutat (eine
+Mutual-Reachability-Distanz statt der rohen Distanz) direkt behebt – beide Demos laufen
+unabhängig voneinander auf dasselbe künftige Stück zu.
 
 ## Warum diese Demo anders aufgebaut ist
 
