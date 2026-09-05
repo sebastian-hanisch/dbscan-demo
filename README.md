@@ -1,5 +1,7 @@
 # DBSCAN für Sammel-Routen ohne feste Anzahl – Streamlit-Demo
 
+**[→ Demo live ausprobieren](https://sebastianhanisch-dbscan-demo.streamlit.app/)**
+
 Drittes Stück der "Konzepte"-Reihe für die Website "Sebastian Hanisch – Operations
 Research und Machine Learning", zweites Stück der **Clustering-Linie** nach
 [kmeans-demo](../kmeans-demo): anders als die Fall-Demos im Portfolio (ein
