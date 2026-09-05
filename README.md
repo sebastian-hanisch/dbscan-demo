@@ -14,13 +14,11 @@ Die Konzepte-Reihe ist kein linearer Pfad, sondern mehrere unabhängige Linien: 
 Demo baut nicht auf [branch-bound-demo](../branch-bound-demo) (Exakte-Suche-Linie) auf,
 sondern auf kmeans-demo. Die Kante ist konkret: DBSCAN behebt zwei Schwächen von
 k-Means – k muss nicht vorab feststehen, und Cluster müssen nicht konvex/kugelförmig
-sein. Geplante Fortsetzung dieser Linie: **HDBSCAN**, motiviert durch DBSCANs eigene
-Schwäche bei stark unterschiedlicher Dichte – genau die Beobachtung, die diese Demo
-selbst live nachweist (siehe unten). HDBSCAN hat inzwischen einen zweiten, unabhängigen
-Vorläufer neben dieser Demo: [agglomerative-demo](../agglomerative-demo) zeigt das
-Chaining-Problem bei Single-Linkage, das HDBSCANs andere Kernzutat (eine
-Mutual-Reachability-Distanz statt der rohen Distanz) direkt behebt – beide Demos laufen
-unabhängig voneinander auf dasselbe künftige Stück zu.
+sein. Diese Demo hatte inzwischen einen zweiten, unabhängigen Zwilling:
+[agglomerative-demo](../agglomerative-demo) zeigt das Chaining-Problem bei Single-Linkage
+– beide laufen zusammen auf [hdbscan-demo](../hdbscan-demo) zu, das live nachweist, dass
+HDBSCAN sowohl das Dichte-Ungleichgewicht-Problem dieser Demo als auch das
+Chaining-Problem der anderen löst.
 
 ## Warum diese Demo anders aufgebaut ist
 
