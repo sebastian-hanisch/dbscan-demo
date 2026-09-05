@@ -31,7 +31,11 @@ Parametern **eps** (Suchradius) und **min_samples** abhängt:
 - **Einfaches Beispiel**: gleichmäßig dichte Gruppen – ein eps aus einer weiten Spanne
   funktioniert.
 - **Nicht-konvexe Formen**: das klassische Zwei-Halbmonde-Beispiel – zeigt konkret, warum
-  k-Means hier grundsätzlich scheitern würde, DBSCAN aber nicht.
+  k-Means hier grundsätzlich scheitern würde, DBSCAN aber nicht. Die Halbmond-Form ist auf
+  **k** nicht-konvexe Bögen verallgemeinert (bei k=2 die ikonischen zwei Halbmonde, darüber
+  wie Blütenblätter angeordnet) – **Anzahl Gruppen** und **Dichte-Ungleichgewicht** wirken
+  bewusst auf beide Formen (Gruppen wie Halbmonde), damit kein Regler formabhängig
+  wirkungslos wird.
 - **Schwerer Fall**: eine dichte, enge Gruppe plus eine lockere, diffuse Gruppe (gleiche
   Punktzahl, nur unterschiedliche Streuung) – bei jedem eps, das die dichte Gruppe schon
   vollständig erfasst (0% Noise), bleibt die diffuse Gruppe noch großteils Noise. Live in

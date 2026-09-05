@@ -50,8 +50,49 @@ def test_density_imbalance_lowers_local_density_of_group_zero():
 
 def test_moons_shape_produces_two_balanced_groups():
     instance = generate_instance(
-        n_points=100, k=3, spread=0.08, density_imbalance=0.0, outlier_fraction=0.0, shape="moons", seed=5
+        n_points=100, k=2, spread=0.08, density_imbalance=0.0, outlier_fraction=0.0, shape="moons", seed=5
     )
     labels = np.array(instance.true_labels)
     assert set(labels.tolist()) == {0, 1}
     assert abs(int((labels == 0).sum()) - int((labels == 1).sum())) <= 1
+
+
+def test_moons_shape_with_k_greater_than_two_produces_k_balanced_arcs():
+    instance = generate_instance(
+        n_points=200, k=4, spread=0.08, density_imbalance=0.0, outlier_fraction=0.0, shape="moons", seed=6
+    )
+    labels = np.array(instance.true_labels)
+    assert set(labels.tolist()) == {0, 1, 2, 3}
+    counts = [int((labels == i).sum()) for i in range(4)]
+    assert max(counts) - min(counts) <= 1
+
+
+def _mean_nn_distance(group_points):
+    d = np.sqrt(((group_points[:, None, :] - group_points[None, :, :]) ** 2).sum(axis=2))
+    np.fill_diagonal(d, np.inf)
+    return d.min(axis=1).mean()
+
+
+def test_density_imbalance_lowers_local_density_of_group_zero_for_moons_too():
+    """Dieselbe Pruefung wie test_density_imbalance_lowers_local_density_of_group_zero,
+    aber fuer shape="moons" mit k=2 - density_imbalance muss auch bei der klassischen
+    Zwei-Halbmonde-Form wirken, nicht nur bei Blobs."""
+    instance = generate_instance(
+        n_points=200, k=2, spread=0.08, density_imbalance=0.9, outlier_fraction=0.0, shape="moons", seed=7
+    )
+    points = np.array(instance.points)
+    labels = np.array(instance.true_labels)
+    nn_group0 = _mean_nn_distance(points[labels == 0])
+    nn_group1 = _mean_nn_distance(points[labels == 1])
+    assert nn_group0 > nn_group1 * 1.5
+
+
+def test_density_imbalance_lowers_local_density_of_group_zero_for_moons_with_k4():
+    instance = generate_instance(
+        n_points=240, k=4, spread=0.08, density_imbalance=0.9, outlier_fraction=0.0, shape="moons", seed=8
+    )
+    points = np.array(instance.points)
+    labels = np.array(instance.true_labels)
+    nn_group0 = _mean_nn_distance(points[labels == 0])
+    nn_others = np.mean([_mean_nn_distance(points[labels == i]) for i in (1, 2, 3)])
+    assert nn_group0 > nn_others * 1.5

@@ -19,7 +19,7 @@ EPS_MIN, EPS_MAX = 0.05, 3.0
 MIN_SAMPLES_MIN, MIN_SAMPLES_MAX = 2, 15
 
 SHAPES = ("blobs", "moons")
-SHAPE_LABELS = {"blobs": "Gruppen (Blobs)", "moons": "Zwei Halbmonde"}
+SHAPE_LABELS = {"blobs": "Gruppen (Blobs)", "moons": "Halbmonde"}
 
 # Hard safety limit - DBSCAN selbst braucht keine Iterationsgrenze (terminiert
 # nach spaetestens n besuchten Punkten), dies begrenzt nur die Animationsschritte.
@@ -35,7 +35,7 @@ PRESETS = {
         "outlier_fraction": 0.0, "shape": "blobs", "eps": 0.6, "min_samples": 5, "seed": 1,
     },
     "Nicht-konvexe Formen (zwei Halbmonde)": {
-        "n_points": 150, "k": 3, "spread": 0.08, "density_imbalance": 0.0,
+        "n_points": 150, "k": 2, "spread": 0.08, "density_imbalance": 0.0,
         "outlier_fraction": 0.0, "shape": "moons", "eps": 0.65, "min_samples": 5, "seed": 2,
     },
     "Schwerer Fall (sehr unterschiedliche Dichte)": {

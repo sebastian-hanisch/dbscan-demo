@@ -137,25 +137,28 @@ with st.sidebar:
     st.header("⚙️ Einstellungen")
     n_points = st.slider("Anzahl Adressen", *bounds("n_points_slider"), key="n_points_slider")
     k = st.slider(
-        "Anzahl Gruppen (nur bei „Gruppen“-Form)", *bounds("k_slider"), key="k_slider",
-        help="Wirkt sich nur aus, wenn unten „Gruppen (Blobs)“ gewählt ist.",
+        "Anzahl Gruppen", *bounds("k_slider"), key="k_slider",
+        help="Bei „Gruppen“: Anzahl runder Cluster. Bei „Halbmonde“: Anzahl nicht-konvexer "
+        "Bögen (bei 2 die klassische Zwei-Halbmonde-Form, darüber wie Blütenblätter "
+        "angeordnet).",
     )
     spread = st.slider(
         "Streuung / Rauschen", *bounds("spread_slider"), key="spread_slider", step=0.05,
         help="Bei „Gruppen“: Streuung je Gruppe. Bei „Halbmonde“: Rauschen um die ideale Kurve.",
     )
     density_imbalance = st.slider(
-        "Dichte-Ungleichgewicht (nur bei „Gruppen“)", *bounds("density_imbalance_slider"), key="density_imbalance_slider", step=0.05,
+        "Dichte-Ungleichgewicht", *bounds("density_imbalance_slider"), key="density_imbalance_slider", step=0.05,
         help="0 = alle Gruppen gleich dicht. 1 = eine Gruppe wird deutlich lockerer/diffuser "
-        "als die übrigen, bei gleicher Punktzahl - simuliert stark unterschiedliche Dichte.",
+        "als die übrigen, bei gleicher Punktzahl - simuliert stark unterschiedliche Dichte. "
+        "Wirkt bei beiden Formen.",
     )
     seed = st.number_input("Zufalls-Seed", *bounds("seed_input"), key="seed_input", step=1)
 
     st.markdown("**Punktwolken-Form**")
     shape = st.radio(
         "Form", options=C.SHAPES, key="shape_radio", format_func=lambda s: C.SHAPE_LABELS[s],
-        help="„Gruppen“ nutzt Anzahl Gruppen, Streuung und Dichte-Ungleichgewicht. „Halbmonde“ "
-        "ignoriert Anzahl Gruppen und Dichte-Ungleichgewicht, nutzt Streuung als Rauschen.",
+        help="„Gruppen“: runde, konvexe Cluster. „Halbmonde“: nicht-konvexe Bögen - Anzahl "
+        "Gruppen und Dichte-Ungleichgewicht wirken auf beide Formen.",
     )
     outlier_fraction = st.slider(
         "Anteil verstreuter Ausreißer", *bounds("outlier_fraction_slider"), key="outlier_fraction_slider", step=0.05,
@@ -231,11 +234,13 @@ labels_now = labels_at_step(instance.n_points, result.events, step)
 roles_now = roles_at_step(instance.n_points, result.events, step)
 live = stats_at_step(labels_now, roles_now, result, step)
 
+st.caption(f"Aktuelle Parameter: eps={eps:g} · min_samples={int(min_samples)}")
+
 lm1, lm2, lm3, lm4, lm5 = st.columns(5)
 lm1.metric("Besuchte Punkte", f"{live['n_visited']}/{instance.n_points}")
 lm2.metric("Core-Punkte", live["n_core"])
 lm3.metric("Rand-Punkte (Border)", live["n_border"])
-lm4.metric("Noise", live["n_noise"])
+lm4.metric("Noise", f"{live['n_noise']} ({live['n_noise'] / instance.n_points * 100:.0f}%)")
 lm5.metric("Cluster gefunden", live["n_clusters"])
 
 st.markdown("**Und mit anderen eps-Werten?**")
@@ -253,8 +258,12 @@ for col, example_eps in zip(example_cols, example_eps_values):
         st.plotly_chart(
             build_mini_scatter_figure(instance, example_result), width="stretch", key=f"mini_{example_eps}"
         )
-        noise_share = sum(1 for l in example_result.final_labels if l == -1) / instance.n_points
-        st.caption(f"eps={example_eps:g} · {example_result.n_clusters} Cluster · {noise_share * 100:.0f}% Noise")
+        noise_count = sum(1 for l in example_result.final_labels if l == -1)
+        noise_share = noise_count / instance.n_points
+        st.caption(
+            f"eps={example_eps:g} · {example_result.n_clusters} Cluster · "
+            f"{noise_count} ({noise_share * 100:.0f}%) Noise"
+        )
 
 st.markdown("---")
 
