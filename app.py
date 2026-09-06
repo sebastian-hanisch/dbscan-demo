@@ -203,11 +203,15 @@ st.markdown("## 🎯 DBSCAN in Aktion")
 
 step_col, play_col = st.columns([5, 1])
 with step_col:
-    step = st.slider(
-        "Schritt (besuchter Punkt)", 0, max_step, key="db_step",
-        help="Ein Schritt = ein Punkt wird (erstmals oder erneut, falls zuvor Noise) "
-        "klassifiziert.",
-    )
+    if max_step == 0:
+        step = 0
+        st.caption("Nur ein einziger Klassifikations-Schritt möglich - kein Regler nötig.")
+    else:
+        step = st.slider(
+            "Schritt (besuchter Punkt)", 0, max_step, key="db_step",
+            help="Ein Schritt = ein Punkt wird (erstmals oder erneut, falls zuvor Noise) "
+            "klassifiziert.",
+        )
 with play_col:
     auto_play = st.button("▶️ Abspielen", width="stretch")
 
