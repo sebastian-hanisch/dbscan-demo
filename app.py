@@ -4,8 +4,8 @@ Sebastian Hanisch - Operations Research und Machine Learning
 Anders als die Fall-Demos im Portfolio (ein Anwendungsfall, mehrere Verfahren im
 Vergleich) zeigt diese Demo EIN Verfahren - DBSCAN - und lässt stattdessen die
 Parameterempfindlichkeit wachsen: von gleichmäßig dichten Gruppen, bei denen fast jedes
-eps funktioniert, bis zu Gruppen sehr unterschiedlicher Dichte, bei denen kein einzelnes
-eps alle Gruppen gleich gut bedient. Drittes Stück der "Konzepte"-Reihe, zweites der
+eps funktioniert, bis zu Gruppen sehr unterschiedlicher Dichte, bei denen ein kleines
+eps nur die dichte Gruppe erfasst und die lockere großteils als Noise stehen lässt. Drittes Stück der "Konzepte"-Reihe, zweites der
 Clustering-Linie nach kmeans-demo (siehe README für die Einordnung).
 
 Lauffähig mit: streamlit run app.py
@@ -74,6 +74,17 @@ darunter - bevor weiter unten die Suche live dazu läuft und die Frage
 "📐 Wie wählt man eps überhaupt?" live beantwortet wird.
 """
 )
+
+# erklaerseite:einfach:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/dbscan-erklaert.json, nicht von Hand ändern)
+with st.expander("💬 In einfachen Worten"):
+    st.markdown(
+        """
+Lieferadressen sollen zu Sammel-Routen gebündelt werden, ohne vorher festzulegen, wie viele Routen es gibt. **DBSCAN** fragt bei jeder Adresse: Wie viele andere Adressen liegen innerhalb eines Suchradius? Sind es genug, ist die Adresse ein Kernpunkt, und von dort wächst die Route von Nachbar zu Nachbar. Adressen am Rand einer Route kommen noch mit, tragen sie aber nicht weiter. Adressen ohne genug Nachbarn bleiben übrig und gelten als nicht routentauglich. Das Ergebnis hängt stark vom Suchradius ab: Ist er zu klein, zerfällt alles, ist er zu groß, verschmilzt alles. Die Demo zeigt Schritt für Schritt, wie die Adressen ihre Rolle bekommen, und wie unterschiedlich dichte Gruppen mit demselben Radius zurechtkommen.
+
+[Ausführlich und verständlich erklärt, mit Fachteil](https://sebastianhanisch.net/dbscan-erklaert.html)
+        """
+    )
+# erklaerseite:einfach:end
 st.caption(
     "Anders als die Fall-Demos im Portfolio, die an einem Anwendungsfall mehrere Verfahren "
     "vergleichen, zeigt diese Demo - Teil der wachsenden \"Konzepte\"-Reihe - **ein** Verfahren "
@@ -117,7 +128,7 @@ st.caption("🎯 Schnellstart – ein Beispielszenario laden:")
 PRESET_HELP = {
     "Einfaches Beispiel (gleichmäßige Dichte)": "Mehrere klar getrennte, ähnlich dichte Gruppen - ein eps aus einer weiten Spanne funktioniert.",
     "Nicht-konvexe Formen (zwei Halbmonde)": "Das klassische Zwei-Halbmonde-Beispiel - k-Means könnte diese Form nicht korrekt trennen, DBSCAN schon.",
-    "Schwerer Fall (sehr unterschiedliche Dichte)": "Eine dichte, enge Gruppe plus eine lockere, diffuse Gruppe - kein einzelnes eps erfasst beide gleich gut.",
+    "Schwerer Fall (sehr unterschiedliche Dichte)": "Eine dichte, enge Gruppe plus eine lockere, diffuse Gruppe - bei kleinem eps ist die dichte Gruppe schon vollständig erfasst, die lockere noch großteils Noise (erst ein größeres eps erfasst beide).",
     "Viele Ausreißer (Noise-Erkennung im Fokus)": "Mehrere Gruppen plus deutlich mehr verstreute Einzelpunkte - zeigt, wie DBSCAN Ausreißer explizit als Noise markiert statt sie zu erzwingen.",
 }
 preset_cols = st.columns(len(C.PRESETS))
@@ -319,6 +330,22 @@ else:
 st.markdown("---")
 
 with st.expander("📐 Mathematische Formulierung"):
+    # erklaerseite:lesehilfe:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/dbscan-erklaert.json, nicht von Hand ändern)
+    st.markdown(
+        r"""
+**Lesehilfe.** Gegeben sind Adressen als Punkte $p$ in der Ebene, ein Suchradius $\varepsilon$ und eine Mindestzahl $m$. Gesucht ist eine Einteilung in Gruppen dicht beieinanderliegender Punkte und in Rauschen, ohne dass die Zahl der Gruppen vorgegeben ist.
+
+| Symbol | Bedeutung |
+|---|---|
+| $D$, $n$ | Menge aller Punkte (Adressen), Zahl der Punkte |
+| $\varepsilon$ | Suchradius (Regler eps) |
+| $m$ | Mindestzahl an Punkten im Radius, der Punkt selbst zählt mit (Regler min_samples, in der Formel minSamples) |
+| $N_{\varepsilon}(p)$ | Nachbarschaft von $p$: alle Punkte aus $D$ im Abstand höchstens $\varepsilon$, $p$ selbst eingeschlossen |
+
+[Schritt für Schritt erklärt, mit Herleitung und Literatur](https://sebastianhanisch.net/dbscan-erklaert.html#fachleute)
+        """
+    )
+    # erklaerseite:lesehilfe:end
     st.markdown(
         r"""
 **eps-Nachbarschaft** eines Punkts $p$: $N_{\varepsilon}(p) = \{q \in D : \lVert p - q

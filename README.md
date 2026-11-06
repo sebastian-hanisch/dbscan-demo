@@ -37,8 +37,11 @@ Parametern **eps** (Suchradius) und **min_samples** abhängt:
   bewusst auf beide Formen (Gruppen wie Halbmonde), damit kein Regler formabhängig
   wirkungslos wird.
 - **Schwerer Fall**: eine dichte, enge Gruppe plus eine lockere, diffuse Gruppe (gleiche
-  Punktzahl, nur unterschiedliche Streuung) – bei jedem eps, das die dichte Gruppe schon
-  vollständig erfasst (0% Noise), bleibt die diffuse Gruppe noch großteils Noise. Live in
+  Punktzahl, nur unterschiedliche Streuung) – bei kleinem eps, das die dichte Gruppe schon
+  vollständig erfasst (0% Noise), bleibt die diffuse Gruppe noch großteils Noise (im Preset:
+  93% bei eps 0,15, 60% bei 0,25, 45% bei 0,3, 20% bei 0,4, 4% bei 0,75, 0% ab 1,0; die
+  Gruppenmitten liegen hier weit auseinander, darum werden beide bei größerem eps sauber
+  getrennt). Live in
   der "📐"-Sektion nachgewiesen: der Noise-Anteil je wahrer Gruppe über eine eps-Spanne,
   nicht nur behauptet.
 - **Viele Ausreißer**: zeigt den Kernvorteil gegenüber k-Means – Ausreißer werden
@@ -76,8 +79,10 @@ schnell genug für eine flüssige Animation.
 - **Struktur-Invarianten**: jeder Punkt genau eine Rolle, Cluster-IDs lückenlos von 0 bis
   `n_clusters - 1`.
 - **Kern-Behauptung der Demo direkt getestet**: bei stark unterschiedlicher Dichte gibt es
-  ein eps, bei dem die dichte Gruppe 0% Noise hat, während die diffuse Gruppe noch
-  deutlich über 30% Noise hat (`test_dense_and_sparse_group_need_different_eps_to_avoid_noise`).
+  kleine eps, bei denen die dichte Gruppe 0% Noise hat, während die diffuse Gruppe noch
+  deutlich über 30% Noise hat; über einen Radienverlauf geprüft: der Noise-Anteil der diffusen
+  Gruppe fällt mit wachsendem eps und ist ab eps 1,0 null
+  (`test_dense_and_sparse_group_need_different_eps_to_avoid_noise`).
 
 ## Dateistruktur
 

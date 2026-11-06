@@ -28,19 +28,25 @@ def test_eps_sweep_extremes_are_almost_all_noise_or_a_single_cluster():
 
 
 def test_dense_and_sparse_group_need_different_eps_to_avoid_noise():
-    """Kern-Behauptung der Demo: bei stark unterschiedlicher Dichte gibt es kein
-    eps, das beide Gruppen gleich gut bedient - bei einem eps, das die dichte
-    Gruppe schon vollstaendig (0% Noise) erfasst, bleibt die diffuse Gruppe noch
-    grossteils Noise."""
+    """Kern-Behauptung der Demo: bei stark unterschiedlicher Dichte erfasst ein KLEINES
+    eps die dichte Gruppe schon vollstaendig (0% Noise), waehrend die diffuse Gruppe noch
+    grossteils Noise bleibt. Der Noise-Anteil der diffusen Gruppe faellt mit wachsendem eps
+    (45% bei 0,3; 20% bei 0,4; 4% bei 0,75) und ist ab eps 1,0 null: gleich gut bedient
+    werden beide in diesem Beispiel erst bei deutlich groesserem eps."""
     instance = generate_instance(
         n_points=150, k=2, spread=0.12, density_imbalance=0.9, outlier_fraction=0.0, shape="blobs", seed=3
     )
     data = instance.as_array()
-    result = run(data, eps=0.3, min_samples=5)
-    fractions = per_group_noise_fraction(instance.true_labels, result.final_labels)
+    diffuse = {}
+    for eps in (0.2, 0.3, 0.4, 0.75, 1.0):
+        result = run(data, eps=eps, min_samples=5)
+        fractions = per_group_noise_fraction(instance.true_labels, result.final_labels)
+        assert fractions[1] == 0.0  # dichte Gruppe: komplett erfasst
+        diffuse[eps] = fractions[0]
 
-    assert fractions[1] == 0.0  # dichte Gruppe: komplett erfasst
-    assert fractions[0] > 0.3  # diffuse Gruppe: noch grossteils Noise
+    assert diffuse[0.2] > 0.5 and diffuse[0.3] > 0.3  # kleines eps: diffuse Gruppe noch grossteils Noise
+    assert diffuse[0.2] > diffuse[0.3] > diffuse[0.4] > diffuse[0.75]  # faellt mit wachsendem eps
+    assert diffuse[0.75] < 0.1 and diffuse[1.0] == 0.0  # grosses eps: auch die diffuse Gruppe ist erfasst
 
 
 def test_eps_sweep_tracks_per_group_noise_when_true_labels_given():
